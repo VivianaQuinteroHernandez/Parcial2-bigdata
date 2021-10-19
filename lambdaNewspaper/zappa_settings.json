@@ -1,0 +1,10 @@
+{
+    "dev": {
+        "app_function": "app.handler",
+        "aws_region": "us-east-1",
+        "profile_name": "default",
+        "project_name": "lambdanewspaper",
+        "runtime": "python3.8",
+        "s3_bucket": "zappa-kq6uu4w2t"
+    }
+}
