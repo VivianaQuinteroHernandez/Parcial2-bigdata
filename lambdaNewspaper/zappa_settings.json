@@ -1,10 +1,13 @@
 {
     "dev": {
-        "app_function": "app.handler",
+        "app_function": "newspaperScraping.handler",
         "aws_region": "us-east-1",
         "profile_name": "default",
         "project_name": "lambdanewspaper",
         "runtime": "python3.8",
-        "s3_bucket": "zappa-kq6uu4w2t"
+        "s3_bucket": "bigdata-newspaper-raw",
+        "keep_warm": false,
+        "apigateway_enabled":false
+	    
     }
 }

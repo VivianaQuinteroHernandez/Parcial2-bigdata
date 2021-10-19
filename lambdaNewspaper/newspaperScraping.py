@@ -2,7 +2,8 @@ import requests
 import csv
 import json
 from bs4 import BeautifulSoup
-
+import boto3
+from datetime import datetime
 
 def handler(event, context):
     rT = requests.get('https://www.eltiempo.com/')
@@ -32,7 +33,7 @@ def handler(event, context):
     jsonNewsT = json.loads(jsonNT)
 
     news_dataT = jsonNewsT['news']
-    newsT = open('new.csv', 'a')
+    newsT = open('newsElTiempo.csv', 'a')
     csvwriterT = csv.writer(newsT)
 
     count = 0
@@ -70,7 +71,7 @@ def handler(event, context):
     jsonNewsE = json.loads(jsonNE)
     print(jsonNewsE)
     news_dataE = jsonNewsE['news']
-    newsE = open('new.csv', 'a')
+    newsE = open('newsElEspectador.csv', 'a')
     csvwriterE = csv.writer(newsE)
 
     count = 0
@@ -80,3 +81,31 @@ def handler(event, context):
             # csvwriterE.writerow(header)
             count += 1
         csvwriterE.writerow(n.values())
+
+
+    currentDay = datetime.now().day
+    currentMonth = datetime.now().month
+    currentYear = datetime.now().year
+    
+    client = boto3.client('s3')
+
+    responseT = client.put_object(
+            Bucket='bigdata-newspaper-raw',
+            Body='',
+            Key=f'tmp/headlines/raw/ElTiempo/{currentYear}/{currentMonth}/{currentDay}/{newsT.name}'
+            )
+    responseE = client.put_object(
+            Bucket='bigdata-newspaper-raw',
+            Body='',
+            Key=f'tmp/headlines/raw/ElEspectador/{currentYear}/{currentMonth}/{currentDay}/{newsE.name}'
+            )
+        
+    s3 = boto3.resource('s3')
+    
+    s3.meta.client.upload_file(f'/tmp/headline/raw/ElTiempo/{currentYear}/{currentMonth}/{currentDay}/{newsT.name}', 'bigdata-newspaper-raw', newsT)
+    s3.meta.client.upload_file(f'/tmp/headline/raw/ElEspectador/{currentYear}/{currentMonth}/{currentDay}/{newsE.name}', 'bigdata-newspaper-raw', newsE)
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!')
+    }
