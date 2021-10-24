@@ -33,19 +33,34 @@ def descargar(event, context):
     # Para guardar el archivo csv en el bucket en S3 se utliza boto3
     s3 = boto3.resource('s3')
 
-    ruta_avianca= f'stocks/company=Avianca/year={year}/month={month}/day={day}/AVHOQ.csv'    
-    s3.meta.client.upload_file('/tmp/AVHOQ.csv', 'parcial2-acciones', ruta_avianca)
-
+    ruta_avianca= f'stocks/company=Avianca/year={year}/month={month}/day={day}/AVHOQ.csv'   
     ruta_ecopetrol= f'stocks/company=Ecopetrol/year={year}/month={month}/day={day}/EC.csv'    
-    s3.meta.client.upload_file('/tmp/EC.csv', 'parcial2-acciones', ruta_ecopetrol)
-
     ruta_aval= f'stocks/company=Grupo Aval/year={year}/month={month}/day={day}/AVAL.csv'    
-    s3.meta.client.upload_file('/tmp/AVAL.csv', 'parcial2-acciones', ruta_aval)
-
     ruta_argos= f'stocks/company=Cementos Argos/year={year}/month={month}/day={day}/CMTOY.csv'    
-    s3.meta.client.upload_file('/tmp/CMTOY.csv', 'parcial2-acciones', ruta_argos)
+
+    s3.meta.client.upload_file('/tmp/AVHOQ.csv', 'punto1-acciones', ruta_avianca)       
+    s3.meta.client.upload_file('/tmp/EC.csv', 'punto1-acciones', ruta_ecopetrol)        
+    s3.meta.client.upload_file('/tmp/AVAL.csv', 'punto1-acciones', ruta_aval)        
+    s3.meta.client.upload_file('/tmp/CMTOY.csv', 'punto1-acciones', ruta_argos)
 
     return {
         'statusCode': 200   
     }
 
+def particion(event, context):
+
+    print('Funcion particion athena')
+
+    # Se utliza boto3 para ejecutar el query y actualizar la particion
+    client = boto3.client('athena')
+
+    queryStart = client.start_query_execution(
+        QueryString = 'msck repair table accion',
+        QueryExecutionContext = {
+            'Database': 'yahoo_finance'
+        }, 
+        ResultConfiguration = { 'OutputLocation': 's3://parcial2-athena-results/results/'}
+    )
+    return {
+        'statusCode': 200   
+    }

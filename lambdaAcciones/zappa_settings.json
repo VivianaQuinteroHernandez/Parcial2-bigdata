@@ -10,19 +10,19 @@
 	"apigateway_enabled": false,
     }
 
-    "punto1-bucket": {
-        "app_function": "parcial2punto1.bucket",
+    "punto1-particion": {
+        "app_function": "parcial2punto1.particion",
         "aws_region": "us-east-1",
         "profile_name": "default",
-        "project_name": "a",
+        "project_name": "athena",
         "runtime": "python3.8",
         "s3_bucket": "zappa-d8onkgdd2",
 	"keep_warm": false,
 	"apigateway_enabled": false,
        	"events": [{
-            "function": "parcial2punto1.bucket",
+            "function": "parcial2punto1.particion",
             "event_source": {
-                  "arn":  "arn:aws:s3:::parcial2-acciones",
+                  "arn":  "arn:aws:s3:::punto1-acciones",
                   "events": [
                     "s3:ObjectCreated:*"
                   ]
