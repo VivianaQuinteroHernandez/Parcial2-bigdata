@@ -1,0 +1,21 @@
+{
+    "dev": {
+        "app_function": "newspaperScrapingFinal.handler",
+        "aws_region": "us-east-1",
+        "profile_name": "default",
+        "project_name": "lambdanewspaperfinal",
+        "runtime": "python3.8",
+        "s3_bucket": "zappa-ack47jrub",
+	"keep_warm": false,
+	"apigateway_enabled":false,
+	"events": [{
+            "function": "newspaperScrapingFinal.handler",
+            "event_source": {
+                  "arn":  "arn:aws:s3:::bigdata-newspaper-raw",
+                  "events": [
+                    "s3:ObjectCreated:*" 
+                  ]
+               }
+            }]
+    }
+}
