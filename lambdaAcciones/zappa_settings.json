@@ -1,0 +1,32 @@
+{
+    "punto1": {
+        "app_function": "parcial2punto1.descargar",
+        "aws_region": "us-east-1",
+        "profile_name": "default",
+        "project_name": "bigdata_acciones",
+        "runtime": "python3.8",
+        "s3_bucket": "zappa-d8onkgdd2",
+	"keep_warm": false,
+	"apigateway_enabled": false,
+    }
+
+    "punto1-bucket": {
+        "app_function": "parcial2punto1.bucket",
+        "aws_region": "us-east-1",
+        "profile_name": "default",
+        "project_name": "a",
+        "runtime": "python3.8",
+        "s3_bucket": "zappa-d8onkgdd2",
+	"keep_warm": false,
+	"apigateway_enabled": false,
+       	"events": [{
+            "function": "parcial2punto1.bucket",
+            "event_source": {
+                  "arn":  "arn:aws:s3:::parcial2-acciones",
+                  "events": [
+                    "s3:ObjectCreated:*"
+                  ]
+               }
+            }],
+    }
+}
