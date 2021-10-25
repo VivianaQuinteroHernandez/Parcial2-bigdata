@@ -97,10 +97,10 @@ def handler(event, context):
  
     s3 = boto3.client('s3')
     with open('/tmp/newsElTiempo.csv', 'rb') as f:
-        s3.upload_fileobj(f, 'bigdata-newspaper-final', f'headline/final/periodico=ElTiempo/year={currentYear}/month={currentMonth}/day=23/newsElTiempo.csv')
+        s3.upload_fileobj(f, 'bigdata-newspaper-final', f'headline/final/periodico=ElTiempo/year={currentYear}/month={currentMonth}/day={currentDay}/newsElTiempo.csv')
     
     with open('/tmp/newsElEspectador.csv', 'rb') as f:
-        s3.upload_fileobj(f, 'bigdata-newspaper-final', f'headline/final/periodico=ElEspectador/year={currentYear}/month={currentMonth}/day=23/newsElEspectador.csv')
+        s3.upload_fileobj(f, 'bigdata-newspaper-final', f'headline/final/periodico=ElEspectador/year={currentYear}/month={currentMonth}/day={currentDay}/newsElEspectador.csv')
     
   
     return {
