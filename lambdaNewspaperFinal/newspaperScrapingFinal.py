@@ -6,19 +6,22 @@ import boto3
 from datetime import datetime
 
 def handler(event, context):
-    rT = requests.get('https://www.eltiempo.com/')
-    soupT = BeautifulSoup(rT.text, 'html.parser')
-    entradasT = soupT.find_all('div', {'class': 'article-details'})
     
-    #bucketsubida = event['Records'][0]['s3']['bucket']['name']
-    #archivonombre = event['Records'][0]['s3']['object']['key']
+    currentDay = datetime.now().day
+    currentMonth = datetime.now().month
+    currentYear = datetime.now().year
     
-    
-    #s3.meta.client.download_file('bigdata-newspaper-raw', f'headline/raw/ElTiempo/{currentYear}/{currentMonth}/{currentDay}/newsElTiempoText.txt', f'/tmp/newsElTiempoText.txt')
+    s3 = boto3.resource('s3')
+
+    s3.meta.client.download_file('bigdata-newspaper-raw', f'headline/raw/ElTiempo/{currentYear}/{currentMonth}/{currentDay}/newsElTiempoText.txt', f'/tmp/newsElTiempoText.txt')
 
     
-    #fileNewsT = open('/tmp/newsElTiempoText.txt', 'r')
-    #entradasT = fileNewsT.read()
+    fileNewsT = open('/tmp/newsElTiempoText.txt', 'rb')
+    rT = fileNewsT.read()
+    print("tipo de dato***",type(rT),rT)
+    soupT = BeautifulSoup(rT, 'html.parser')
+    entradasT = soupT.find_all('div', {'class': 'article-details'})
+
 
     jsonNT = ["{"]
     jsonNT.append('"news":[')
@@ -44,28 +47,21 @@ def handler(event, context):
     jsonNewsT = json.loads(jsonNT)
 
     news_dataT = jsonNewsT['news']
-    newsT = open('/tmp/newsElTiempo.csv', 'w')
-    csvwriterT = csv.writer(newsT)
+    with open("/tmp/newsElTiempo.csv", "w") as fileT:
+        csv_fileT = csv.writer(fileT)
+        csv_fileT.writerow(['title', 'section', 'link'])
+        for itemT in news_dataT:
+            csv_fileT.writerow([itemT.get('title'),itemT.get('section'),itemT.get('link')])
 
-    count = 0
-    for n in news_dataT:
-        if count == 0:
-            header = n.keys()
-            csvwriterT.writerow(header)
-            count += 1
-        csvwriterT.writerow(n.values())
+    s3.meta.client.download_file('bigdata-newspaper-raw', f'headline/raw/ElEspectador/{currentYear}/{currentMonth}/{currentDay}/newsElEspectadorText.txt', f'/tmp/newsElEspectadorText.txt')
 
-    rE = requests.get('https://www.elespectador.com/')
-    soupE = BeautifulSoup(rE.text, 'html.parser')
+    
+    fileNewsE = open('/tmp/newsElEspectadorText.txt', 'rb')
+    rE = fileNewsE.read()
+    print("tipo de dato*-----**",type(rE),rE)
+    soupE = BeautifulSoup(rE, 'html.parser')
     entradasE = soupE.find_all('div', {'class': 'Card-Container'})
-    
-    #s3.meta.client.download_file('bigdata-newspaper-raw', f'headline/raw/ElEspectador/{currentYear}/{currentMonth}/{currentDay}/newsElEspectadorText.txt', f'/tmp/newsElEspectadorText.txt')
 
-    
-    #fileNewsE = open('/tmp/newsElEspectadorText.txt', 'r')
-    #entradasE = fileNewsE.read()
-
-    
     jsonNE = ["{"]
     jsonNE.append('"news":[')
     for i, entradaE in enumerate(entradasE):
@@ -91,51 +87,41 @@ def handler(event, context):
     jsonNewsE = json.loads(jsonNE)
     print(jsonNewsE)
     news_dataE = jsonNewsE['news']
-    newsE = open('/tmp/newsElEspectador.csv', 'w')
-    csvwriterE = csv.writer(newsE)
+  
+    with open("/tmp/newsElEspectador.csv", "w") as file:
+        csv_file = csv.writer(file)
+        csv_file.writerow(['title', 'section', 'link'])
+        for item in news_dataE:
+            csv_file.writerow([item.get('title'),item.get('section'),item.get('link')])
 
-    count = 0
-    for n in news_dataE:
-        if count == 0:
-            #header = n.keys()
-            # csvwriterE.writerow(header)
-            count += 1
-        csvwriterE.writerow(n.values())
-
-    
-    
-    #client = boto3.client('s3')
-
-    #responseT = client.put_object(
-    #        Bucket='bigdata-newspaper-raw',
-    #        Body='',
-    #        Key=f'headlines/final/ElTiempo/{currentYear}/{currentMonth}/{currentDay}/{newsT.name}'
-    #        )
-    #responseE = client.put_object(
-    #        Bucket='bigdata-newspaper-raw',
-    #        Body='',
-    #        Key=f'headlines/final/ElEspectador/{currentYear}/{currentMonth}/{currentDay}/{newsE.name}'
-    #        )
-        
-    #s3 = boto3.resource('s3')
-    
-    #s3.meta.client.upload_file(f'/tmp/newsElTiempo.csv', 'bigdata-newspaper-final', f'headline/final/ElTiempo/{currentYear}/{currentMonth}/{currentDay}/newsElTiempo.csv')
-    #s3.meta.client.upload_file(f'/tmp/newsElEspectador.csv', 'bigdata-newspaper-final', f'headline/final/ElEspectador/{currentYear}/{currentMonth}/{currentDay}/newsElEspectador.csv')
-    
-    
-    currentDay = datetime.now().day
-    currentMonth = datetime.now().month
-    currentYear = datetime.now().year
-    
+ 
     s3 = boto3.client('s3')
     with open('/tmp/newsElTiempo.csv', 'rb') as f:
-        s3.upload_fileobj(f, 'bigdata-newspaper-final', f'headline/final/ElTiempo/{currentYear}/{currentMonth}/{currentDay}/newsElTiempo.csv')
+        s3.upload_fileobj(f, 'bigdata-newspaper-final', f'headline/final/periodico=ElTiempo/year={currentYear}/month={currentMonth}/day=23/newsElTiempo.csv')
     
     with open('/tmp/newsElEspectador.csv', 'rb') as f:
-        s3.upload_fileobj(f, 'bigdata-newspaper-final', f'headline/final/ElEspectador/{currentYear}/{currentMonth}/{currentDay}/newsElEspectador.csv')
+        s3.upload_fileobj(f, 'bigdata-newspaper-final', f'headline/final/periodico=ElEspectador/year={currentYear}/month={currentMonth}/day=23/newsElEspectador.csv')
     
   
     return {
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda final!')
+    }
+    
+def particion(event, context):
+
+    print('Funcion particion athena periodicos')
+
+    # Se utliza boto3 para ejecutar el query y actualizar la particion
+    client = boto3.client('athena')
+
+    queryStart = client.start_query_execution(
+        QueryString = 'msck repair table newspapertable',
+        QueryExecutionContext = {
+            'Database': 'newspapers'
+        }, 
+        ResultConfiguration = { 'OutputLocation': 's3://zappa-19e9r4vsw/results/'}
+    )
+    return {
+        'statusCode': 200   
     }

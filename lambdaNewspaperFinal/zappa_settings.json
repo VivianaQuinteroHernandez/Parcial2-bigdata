@@ -3,12 +3,12 @@
         "app_function": "newspaperScrapingFinal.handler",
         "aws_region": "us-east-1",
         "profile_name": "default",
-        "project_name": "lambdanewspaperfinal",
+        "project_name": "lambdanewspaperFinal",
         "runtime": "python3.8",
-        "s3_bucket": "zappa-ack47jrub",
-	"keep_warm": false,
-	"apigateway_enabled":false,
-	"events": [{
+        "s3_bucket": "zappa-8lkkve7xh",
+	      "keep_warm": false,
+	      "apigateway_enabled":false,
+	      "events": [{
             "function": "newspaperScrapingFinal.handler",
             "event_source": {
                   "arn":  "arn:aws:s3:::bigdata-newspaper-raw",
@@ -17,5 +17,25 @@
                   ]
                }
             }]
+    },
+
+    "dev-particion": {
+      "app_function": "newspaperScrapingFinal.particion",
+      "aws_region": "us-east-1",
+      "profile_name": "default",
+      "project_name": "athena",
+      "runtime": "python3.8",
+      "s3_bucket": "zappa-d8onk999gdd2",
+      "keep_warm": false,
+      "apigateway_enabled": false,
+       "events": [{
+          "function": "newspaperScrapingFinal.particion",
+          "event_source": {
+                "arn":  "arn:aws:s3:::bigdata-newspaper-final",
+                "events": [
+                  "s3:ObjectCreated:*"
+                ]
+             }
+          }]
     }
 }

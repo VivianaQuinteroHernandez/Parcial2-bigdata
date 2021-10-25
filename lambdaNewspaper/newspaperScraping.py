@@ -22,20 +22,7 @@ def handler(event, context):
     currentDay = datetime.now().day
     currentMonth = datetime.now().month
     currentYear = datetime.now().year
-    
-    #client = boto3.client('s3')
-
-    #responseT = client.put_object(
-    #        Bucket='bigdata-newspaper-raw',
-    #        Body='',
-    #        Key=f'headlines/final/ElTiempo/{currentYear}/{currentMonth}/{currentDay}/{newsT.name}'
-    #        )
-    #responseE = client.put_object(
-    #        Bucket='bigdata-newspaper-raw',
-    #        Body='',
-    #        Key=f'headlines/final/ElEspectador/{currentYear}/{currentMonth}/{currentDay}/{newsE.name}'
-    #        )
-        
+          
     s3 = boto3.client('s3')
     with open("/tmp/newsElTiempoText.txt", "rb") as f:
         s3.upload_fileobj(f, 'bigdata-newspaper-raw', f'headline/raw/ElTiempo/{currentYear}/{currentMonth}/{currentDay}/newsElTiempoText.txt')

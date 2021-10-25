@@ -1,4 +1,4 @@
-#!c:\users\usuario\bigdata\lambdanewspaperfinal\envf\scripts\python.exe
+#!c:\users\usuario\bigdata\parcial2-bigdata\lambdanewspaperfinal\envf\scripts\python.exe
 # EASY-INSTALL-ENTRY-SCRIPT: 'future==0.18.2','console_scripts','futurize'
 __requires__ = 'future==0.18.2'
 import re

@@ -1,4 +1,4 @@
-#!c:\users\usuario\bigdata\lambdanewspaperfinal\envf\scripts\python.exe
+#!c:\users\usuario\bigdata\parcial2-bigdata\lambdanewspaperfinal\envf\scripts\python.exe
 
 import sys
 import json

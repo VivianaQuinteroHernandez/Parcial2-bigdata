@@ -1,4 +1,4 @@
-#!c:\users\usuario\bigdata\lambdanewspaperfinal\envf\scripts\python.exe
+#!c:\users\usuario\bigdata\parcial2-bigdata\lambdanewspaperfinal\envf\scripts\python.exe
 # EASY-INSTALL-ENTRY-SCRIPT: 'kappa==0.6.0','console_scripts','kappa'
 __requires__ = 'kappa==0.6.0'
 import re
